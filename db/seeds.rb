@@ -1,20 +1,21 @@
 require "csv"
 
-# Clear existing data to avoid duplication or constraint errors
 Product.destroy_all
 Category.destroy_all
 
 csv_file = Rails.root.join("db/products.csv")
-csv_data = File.read(csv_file)
-products = CSV.parse(csv_data, headers: true, header_converters: :symbol)
 
-products.each do |row|
-  category = Category.find_or_create_by!(name: row[:category_name])
+# Read with file encoding set to utf-8 with BOM stripped
+CSV.foreach(csv_file, headers: false, encoding: "bom|utf-8") do |row|
+  # Skip header row or any blank rows
+  next if row[0] == "title" || row[0].blank?
+
+  category = Category.find_or_create_by!(name: row[4])
   category.products.create!(
-    title: row[:title],
-    description: row[:description],
-    price: row[:price],
-    stock_quantity: row[:stock_quantity]
+    title: row[0],
+    price: row[1],
+    description: row[2],
+    stock_quantity: row[3]
   )
 end
 
