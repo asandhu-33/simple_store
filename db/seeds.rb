@@ -1,13 +1,21 @@
-# Clear existing products to prevent duplicates
-Product.destroy_all
+require "csv"
 
-# Generate 676 fake products using Faker
-676.times do
-  Product.create!(
-    title: Faker::Commerce.product_name,
-    price: Faker::Commerce.price(range: 1.0..100.0),
-    stock_quantity: Faker::Number.between(from: 1, to: 100)
+# Clear existing data to avoid duplication or constraint errors
+Product.destroy_all
+Category.destroy_all
+
+csv_file = Rails.root.join("db/products.csv")
+csv_data = File.read(csv_file)
+products = CSV.parse(csv_data, headers: true, header_converters: :symbol)
+
+products.each do |row|
+  category = Category.find_or_create_by!(name: row[:category_name])
+  category.products.create!(
+    title: row[:title],
+    description: row[:description],
+    price: row[:price],
+    stock_quantity: row[:stock_quantity]
   )
 end
 
-puts "Successfully created #{Product.count} products!"
+puts "Loaded #{Category.count} categories and #{Product.count} products!"
