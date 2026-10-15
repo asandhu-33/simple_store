@@ -1,16 +1,16 @@
-Part 1: A New Rails Application
+#Part 1: A New Rails Application
 
-Step 1: Project Initialization
+##Step 1: Project Initialization
 Generated a new Ruby on Rails application configured with SQLite as the default database adapter.
 rails new simple_store
 cd simple_store
 
-Step 2: Generating Models and Migrations
+##Step 2: Generating Models and Migrations
 Created two primary domain models: Category and Product. A Category has many products, and a Product belongs to a category.
 rails g model Category name:string
 rails g model Product title:string price:decimal description:text stock_quantity:integer category:references
 
-Step 3: Defining Model Associations & Validations
+##Step 3: Defining Model Associations & Validations
 app/models/category.rb
 class Category < ApplicationRecord
   has_many :products, dependent: :destroy
@@ -26,18 +26,18 @@ class Product < ApplicationRecord
   validates :stock_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 end
 
-Step 4: Running Database Migrations
+##Step 4: Running Database Migrations
 Applied schema changes to the local SQLite database:
 rails db:migrate
 
 
-Part 2: Loading Data From a CSV
-Step 5: Adding the Dataset (products.csv)
+#Part 2: Loading Data From a CSV
+##Step 5: Adding the Dataset (products.csv)
 Placed raw data file inside the db/ directory (db/products.csv). 
 The CSV structure maps product details and category associations:
 title,price,description,stock_quantity,category_name
 
-Step 6: Writing the Seeding Script (db/seeds.rb)
+##Step 6: Writing the Seeding Script (db/seeds.rb)
 To populate  database reliably while avoiding encoding/BOM issues and parsing failures, I implemented a robust parsing approach inside db/seeds.rb:
 
 require "csv"
@@ -67,7 +67,7 @@ puts "Loaded #{Category.count} categories and #{Product.count} products!"
 Then executed the seed command:
 rails db:seed
 
-Step 7: Optimizing Controller Queries (Preventing N+1)
+#Step 7: Optimizing Controller Queries (Preventing N+1)
 
 To prevent performance degradation caused by N+1 database queries when rendering associated categories in the view, I updated ProductsController to eagerly load categories using .includes(:category):
 
@@ -84,7 +84,7 @@ class ProductsController < ApplicationController
 end
 
 
-Step 8: Updating Views & Rendering Products
+#Step 8: Updating Views & Rendering Products
 Configured index view (app/views/products/index.html.erb) to display the seeded records cleanly:
 
 <h1>All Products</h1>
@@ -101,14 +101,14 @@ Configured index view (app/views/products/index.html.erb) to display the seeded 
 </ul>
 
 
-Running the Application
+#Running the Application
 rails s
 
 Open web browser and navigate to:
 http://localhost:3000/products
 
 
-Git Version Control Workflow
+#Git Version Control Workflow
 To commit complete work to Git:
 
 git add .
