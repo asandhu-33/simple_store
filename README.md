@@ -74,13 +74,13 @@ To prevent performance degradation caused by N+1 database queries when rendering
 app/controllers/products_controller.rb
 
 class ProductsController < ApplicationController
-  def index
-    @products = Product.includes(:category).all
-  end
+  def index
+    @products = Product.includes(:category).all
+  end
 
-  def show
-    @product = Product.find(params[:id])
-  end
+  def show
+    @product = Product.find(params[:id])
+  end
 end
 
 
